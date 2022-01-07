@@ -30,16 +30,23 @@ where isim='veli han';
 select * from calisanlar;
 /*3-) Maaşı ortalamanın altında olan çalışanların maaşına %20 zam yapınız.
 Komut sonrası görünüm aşağıdaki gibidir.*/
-update calisanlar set maas=maas*120/100 where maas<avg(maas)
+update calisanlar set maas=maas*120/100 where maas<avg(maas);
 /*4-) Çalışanların isim ve cocuk_sayisi'ni listeleyen bir sorgu yazınız. Komut
 sonrası görünüm aşağıdaki gibidir.*/
-
+select isim, (select cocuk_sayisi from aileler where calisanlar.id=aileler.id) from calisanlar;
 /*5-) calisanlar' ın id, isim ve toplam_gelir'lerini gösteren bir sorgu yazınız.
 toplam_gelir = calisanlar.maas + aileler.ek_gelir
-Komut sonrası görünüm aşağıdaki gibidir.
-6-) Eğer bir ailenin kişi başı geliri 2000 TL den daha az ise o çalışanın
+Komut sonrası görünüm aşağıdaki gibidir.*/
+select id, isim, (select maas+ek_gelir from aileler where calisanlar.id=aileler.id)toplam_gelir from calisanlar;
+/*6-) Eğer bir ailenin kişi başı geliri 2000 TL den daha az ise o çalışanın
 -- maaşına ek %10 aile yardım zammı yapınız.
 -- kisi_basi_gelir = toplam_gelir / cocuk_sayisi + 2 (anne ve baba)*/
+update calisanlar
+set maas=maas*110/100
+where (select (maas+ek_gelir)/(cocuk_sayisi+2) 
+	   from aileler 
+       where calisanlar.id=aileler.id)
+			<2000;
 
 
 
